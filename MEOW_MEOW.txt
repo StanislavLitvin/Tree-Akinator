@@ -1,0 +1,47 @@
+digraph Tree_Dump_Graphviz
+{
+	rankdir=TB;
+	node [shape=Mrecord, fontcolor="#220808"];
+	bgcolor="#EADF9D";
+	margin=0.2;
+	pad=0.2;
+
+	node_0 [label="{INDEX: 0 | VALUE: 1}", style=filled, fillcolor="#CE86F8"];
+	node_1 [label="{INDEX: 1 | VALUE: 2}", style=filled, fillcolor="#3EB8D7"];
+	node_2 [label="{INDEX: 2 | VALUE: 4}", style=filled, fillcolor="#3EB8D7"];
+	node_3 [label="{INDEX: 3 | VALUE: 8}", style=filled, fillcolor="#93C996"];
+	node_4 [label="{INDEX: 4 | VALUE: 9}", style=filled, fillcolor="#93C996"];
+	node_5 [label="{INDEX: 5 | VALUE: 5}", style=filled, fillcolor="#3EB8D7"];
+	node_6 [label="{INDEX: 6 | VALUE: 10}", style=filled, fillcolor="#93C996"];
+	node_7 [label="{INDEX: 7 | VALUE: 11}", style=filled, fillcolor="#93C996"];
+	node_8 [label="{INDEX: 8 | VALUE: 3}", style=filled, fillcolor="#3EB8D7"];
+	node_9 [label="{INDEX: 9 | VALUE: 6}", style=filled, fillcolor="#3EB8D7"];
+	node_10 [label="{INDEX: 10 | VALUE: 12}", style=filled, fillcolor="#93C996"];
+	node_11 [label="{INDEX: 11 | VALUE: 13}", style=filled, fillcolor="#93C996"];
+	node_12 [label="{INDEX: 12 | VALUE: 7}", style=filled, fillcolor="#3EB8D7"];
+	node_13 [label="{INDEX: 13 | VALUE: 14}", style=filled, fillcolor="#93C996"];
+	node_14 [label="{INDEX: 14 | VALUE: 15}", style=filled, fillcolor="#93C996"];
+
+	node_0 -> node_1;
+	node_1 -> node_2;
+	node_2 -> node_3;
+	node_2 -> node_4;
+	node_1 -> node_5;
+	node_5 -> node_6;
+	node_5 -> node_7;
+	node_0 -> node_8;
+	node_8 -> node_9;
+	node_9 -> node_10;
+	node_9 -> node_11;
+	node_8 -> node_12;
+	node_12 -> node_13;
+	node_12 -> node_14;
+
+	{ rank=same; node_3; node_4; }
+	{ rank=same; node_6; node_7; }
+	{ rank=same; node_2; node_5; }
+	{ rank=same; node_10; node_11; }
+	{ rank=same; node_13; node_14; }
+	{ rank=same; node_9; node_12; }
+	{ rank=same; node_1; node_8; }
+}
