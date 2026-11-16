@@ -26,6 +26,13 @@ int main()
 
   Tree_Destroy(Tree);
 
+  struct Tree_t* New_Tree = Reading_Preorder();
+
+  Dump_Tree(New_Tree);
+  Print_Tree(New_Tree->Top);
+
+  Tree_Destroy(New_Tree);
+
   return 0;
 }*/
 
@@ -76,6 +83,13 @@ int main()
   Print_Tree(Tree->Top);
 
   Tree_Destroy(Tree);
+
+  struct Tree_t* New_Tree = Reading_Preorder();
+
+  Dump_Tree(New_Tree);
+  Print_Tree(New_Tree->Top);
+
+  Tree_Destroy(New_Tree);
 
   return 0;
 }

@@ -221,15 +221,194 @@ void Print_Tree(const struct Tree_Node_t* Top_Node)
 {
   assert(Top_Node);
 
-  printf("(");
+  int Recursion_Deep = 0;
+
+  Print_Tree_Wrap(Top_Node, &Recursion_Deep);
+
+  return;
+}
+
+void Print_Tree_Wrap(const struct Tree_Node_t* Top_Node, int* Recursion_Deep)
+{
+  assert(Top_Node);
+
+  if ((*Recursion_Deep) == 0) printf("(");
+  else                        printf(" (");
+
+  (*Recursion_Deep)++;
 
   printf(SPECIFIER, Top_Node->Data);
   
   if (Top_Node->Left)
-    Print_Tree(Top_Node->Left);
+    Print_Tree_Wrap(Top_Node->Left, Recursion_Deep);
 
   if (Top_Node->Right)
-    Print_Tree(Top_Node->Right);
+    Print_Tree_Wrap(Top_Node->Right, Recursion_Deep);
+
+  if (Top_Node->Left == NULL && Top_Node->Right == NULL)
+    printf(" nil nil");
 
   printf(")");
+
+  return;
+}
+
+struct Tree_t* Reading_Preorder(void)
+{
+  FILE* File_For_Preorder = fopen(FILE_FOR_PREORDER, "r");
+  if (File_For_Preorder == NULL)
+  {
+    printf("ERROR: File_For_Preorder cannot open\n");
+    return NULL;
+  }
+
+  char Str_Preorder[MAX_LENGTH_PREORDER] = {};
+
+  if (fgets(Str_Preorder, MAX_LENGTH_PREORDER, File_For_Preorder) == NULL)
+  {
+    printf("ERROR: Broken file\n");
+    if (fclose(File_For_Preorder) != 0)
+      printf("WARNING: File_For_Preorder cannot close\n");
+    return NULL;
+  }
+
+  if (fclose(File_For_Preorder) != 0)
+    printf("WARNING: File_For_Preorder cannot close\n");
+
+  struct Tree_t* Tree = Tree_Init();
+  if (Tree == NULL)
+    return NULL;
+
+  const char* Ptr = Str_Preorder;
+
+  Skipping_Space(&Ptr);
+
+  if (*Ptr == '(')
+  {
+    Ptr++;
+    Skipping_Space(&Ptr);
+
+    Tree_Elem_t Root_Value = NULL_VALUE;
+    int Readed_Chars = 0;
+    
+    if (sscanf(Ptr, "%d%n", &Root_Value, &Readed_Chars) != 1)
+    {
+      printf("ERROR: expected correct root value\n");
+      return NULL;
+    }
+
+    Ptr += Readed_Chars;
+    
+    struct Tree_Node_t* Root = Creat_Node(Root_Value);
+    if (Root == NULL)
+      return NULL;
+    
+    Link_To_Tree(Root, NULL, LEFT_BRANCH, Tree);
+    
+    Skipping_Space(&Ptr);
+
+    struct Tree_Node_t* Left_Child = Reading_Recursive(&Ptr, Tree);
+    if (Left_Child != NULL)
+      Link_To_Tree(Left_Child, Root, LEFT_BRANCH, Tree);
+    
+    Skipping_Space(&Ptr);
+    
+    struct Tree_Node_t* Right_Child = Reading_Recursive(&Ptr, Tree);
+    if (Right_Child != NULL)
+      Link_To_Tree(Right_Child, Root, RIGHT_BRANCH, Tree);
+    
+    Skipping_Space(&Ptr);
+    
+    if (*Ptr == ')')
+      Ptr++;
+
+    else
+      printf("ERROR: missing close-braket\n");
+  }
+
+  else
+  {
+    printf("ERROR: expected '(' at the beginning string\n");
+    return NULL;
+  }
+
+  return Tree;
+}
+
+struct Tree_Node_t* Reading_Recursive(const char** Str, struct Tree_t* Tree)
+{
+  assert(Str);
+  assert(*Str);
+  assert(Tree);
+
+  Skipping_Space(Str);
+
+  if (**Str == '\0')
+    return NULL;
+
+  if (strncmp(*Str, "nil", 3) == 0)
+  {
+    (*Str) += 3;
+    return NULL;
+  }
+  
+  if (**Str == '(')
+  {
+    (*Str)++;
+    Skipping_Space(Str);
+
+    Tree_Elem_t Value = NULL_VALUE;
+    int Readed_Chars = 0;
+
+    if (sscanf(*Str, SPECIFIER "%n", &Value, &Readed_Chars) != 1)
+    {
+      printf("ERROR: expected int values int the treeeee\n");
+      return NULL;
+    }
+
+    (*Str) += Readed_Chars;
+
+    struct Tree_Node_t* New_Node = Creat_Node(Value);
+    if (New_Node == NULL)
+      return NULL;
+
+    Skipping_Space(Str);
+
+    struct Tree_Node_t* Left_Child = Reading_Recursive(Str, Tree);
+    if (Left_Child != NULL)
+      Link_To_Tree(Left_Child, New_Node, LEFT_BRANCH, Tree);
+
+    Skipping_Space(Str);
+
+    struct Tree_Node_t* Right_Child = Reading_Recursive(Str, Tree);
+    if (Right_Child != NULL)
+      Link_To_Tree(Right_Child, New_Node, RIGHT_BRANCH, Tree);
+
+    Skipping_Space(Str);
+
+    if (**Str == ')')
+      (*Str)++;
+
+    else
+    {
+      printf("ERROR: missing close-braket\n");
+      return NULL;
+    }
+
+    return New_Node;
+  }
+
+  printf("ERROR: syntax error (unexpected '%c')\n", **Str);
+  return NULL;
+}
+
+void Skipping_Space(const char** Str)
+{
+  assert(Str);
+  assert(*Str);
+
+  while (**Str != '\0' && isspace((unsigned char)**Str))
+    (*Str)++;
+
+  return;
 }

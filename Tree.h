@@ -6,11 +6,15 @@ typedef int Tree_Elem_t;
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <ctype.h>
+#include <string.h>
 
 #define SPECIFIER "%d"
 #define FILE_FOR_DUMP "MEOW_MEOW.txt"
+#define FILE_FOR_PREORDER "PREORDER_FORM.txt"
 
 const Tree_Elem_t NULL_VALUE = 0;
+const size_t MAX_LENGTH_PREORDER = 512;
 
 struct Tree_Node_t
 {
@@ -22,7 +26,7 @@ struct Tree_Node_t
 
 struct Tree_t
 {
-  Tree_Node_t* Top;
+  Tree_Node_t* Top;//Root
   int Number_Nodes;
 };
 
@@ -45,15 +49,23 @@ void Destroy_Node(struct Tree_Node_t* Node);
 struct Tree_t* Tree_Init(void);
 void Tree_Destroy(struct Tree_t* Tree);
 void Tree_Destroy_Recursive(struct Tree_Node_t* Top_Node);
+
 enum Tree_Error_Status Link_To_Tree(struct Tree_Node_t* Node,
                                     struct Tree_Node_t* Passed_Parent,
                                     Tree_Branch Branch, struct Tree_t* Tree);
 //TODO написать сраный Verify_Tree
+
 enum Tree_Error_Status Dump_Tree(const struct Tree_t* Tree);
 void Dump_Node(FILE* Dump_File, const struct Tree_Node_t* Node, int Index);
 int Dump_Tree_Nodes(FILE* Dump_File, struct Tree_Node_t* Node, int Index);
 int Dump_Tree_Arrows(FILE* Dump_File, struct Tree_Node_t* Node, int Index);
 int Dump_Tree_Ranks(FILE* Dump_File, struct Tree_Node_t* Node, int Index);
+
 void Print_Tree(const struct Tree_Node_t* Top_Node);
+void Print_Tree_Wrap(const struct Tree_Node_t* Top_Node, int* Recursion_Deep);
+
+struct Tree_t* Reading_Preorder(void);
+struct Tree_Node_t* Reading_Recursive(const char** Str, struct Tree_t* Tree);
+void Skipping_Space(const char** Str);
 
 #endif
